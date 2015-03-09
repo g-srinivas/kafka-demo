@@ -2,9 +2,9 @@ name := "kafka-demo"
 
 version := "0.1.17-SNAPSHOT"
 
-scalaVersion := "2.9.2"
+scalaVersion := "2.10.5"
 
-libraryDependencies ++=  Seq(("org.apache.kafka" % "kafka_2.9.2" % "0.8.1.1" % "compile")
+libraryDependencies ++=  Seq(("org.apache.kafka" % "kafka_2.10" % "0.8.0")
   .exclude("com.sun.jmx", "jmxri")
   .exclude("javax.jms", "jms")
   .exclude("com.sun.jdmk", "jmxtools"))

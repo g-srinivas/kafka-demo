@@ -8,7 +8,7 @@ import kafka.producer.ProducerConfig
 import kafka.utils.VerifiableProperties
 import scala.util.Random
 
- object Main extends  Application {
+ object Main extends  App {
 
    println("hello world")
     val events: Long = 567
@@ -17,7 +17,7 @@ import scala.util.Random
     val  props = new Properties()
     props.put("metadata.broker.list", "localhost:9093,localhost:9094")
     props.put("serializer.class", "kafka.serializer.StringEncoder")
-    props.put("partitioner.class", "example.producer.SimplePartitioner")
+    //props.put("partitioner.class", "example.producer.SimplePartitioner[Any]")
     props.put("request.required.acks", "1")
 
     val config = new ProducerConfig(props)
@@ -26,7 +26,7 @@ import scala.util.Random
       val runtime = new Date().getTime()
       val ip = "192.168.2." + rnd.nextInt(255)
       val msg = runtime + ",www.google.com," + ip
-   val data = new KeyedMessage[String, String]("page_visits", ip, msg);
+   val data = new KeyedMessage[String, String]("my-replicated-topic", ip, msg);
       producer.send(data)
 
     producer.close
@@ -35,17 +35,8 @@ import scala.util.Random
 
 
 
-class SimplePartitioner(props: VerifiableProperties) extends Partitioner{
-  /*override def  partition(key: Object,  a_numPartitions: Int) {
-    var partition = 0
-    val  stringKey = key.toString
-    val offset = stringKey.lastIndexOf('.')
-    if (offset > 0) {
-      partition = Integer.parseInt( stringKey.substring(offset+1)) % a_numPartitions;
-    }
-    return partition;
-  }*/
-  override def partition(key: Any, numPartitions: Int): Int = {
+class SimplePartitioner[T](props: VerifiableProperties) extends Partitioner[T]{
+   override def partition(key: T, numPartitions: Int): Int = {
     var partition = 0
     val  stringKey = key.toString
     val offset = stringKey.lastIndexOf('.')
